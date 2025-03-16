@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class CustomerServiceImpl implements CustomerService {
 
-    //注入远程调用接口
     @Autowired
     private CustomerInfoFeignClient customerInfoFeignClient;
     @Autowired
@@ -35,7 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         //2 判断如果返回失败了，返回错误提示
         Integer codeResult = loginResult.getCode();
-        if(codeResult != 200) {
+        if (codeResult != 200) {
             throw new GuiguException(ResultCodeEnum.DATA_ERROR);
         }
 

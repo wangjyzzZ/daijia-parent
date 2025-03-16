@@ -34,13 +34,12 @@ public class CheckLoginAspect {
             throw new GuiguException(ResultCodeEnum.LOGIN_AUTH);
         }
 
-        String customerId = (String)redisTemplate.opsForValue().get(RedisConstant.USER_LOGIN_KEY_PREFIX+token);
+        String customerId = (String)redisTemplate.opsForValue().get(RedisConstant.USER_LOGIN_KEY_PREFIX + token);
 
         if (StringUtils.hasText(customerId)) {
             AuthContextHolder.setUserId(Long.parseLong(customerId));
         }
 
-        //6 执行业务方法
         return proceedingJoinPoint.proceed();
     }
 }

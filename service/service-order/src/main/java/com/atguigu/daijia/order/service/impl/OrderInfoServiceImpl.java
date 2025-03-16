@@ -113,7 +113,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     @Override
     public Boolean robNewOrder(Long driverId, Long orderId) {
         String key = RedisConstant.ORDER_ACCEPT_MARK + orderId;
-        if(!redisTemplate.hasKey(key)) {
+        if(Boolean.FALSE.equals(redisTemplate.hasKey(key))) {
             //抢单失败
             throw new GuiguException(ResultCodeEnum.COB_NEW_ORDER_FAIL);
         }
@@ -125,7 +125,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             //获取锁
             boolean flag = lock.tryLock(RedisConstant.ROB_NEW_ORDER_LOCK_WAIT_TIME, RedisConstant.ROB_NEW_ORDER_LOCK_LEASE_TIME, TimeUnit.SECONDS);
             if (flag) {
-                if (!redisTemplate.hasKey(key)) {
+                if (Boolean.FALSE.equals(redisTemplate.hasKey(key))) {
                     //抢单失败
                     throw new GuiguException(ResultCodeEnum.COB_NEW_ORDER_FAIL);
                 }
@@ -155,7 +155,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             throw new GuiguException(ResultCodeEnum.COB_NEW_ORDER_FAIL);
         } finally {
             //释放
-            if(lock.isLocked()) {
+            if (lock.isLocked() && lock.isHeldByCurrentThread()) {
                 lock.unlock();
             }
         }
